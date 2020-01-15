@@ -1,0 +1,19 @@
+FROM ubuntu:16.04
+# 修改更新源为阿里云
+ADD sources.list /etc/apt/sources.list
+ADD requirements.txt /requirements.txt
+# 时区为上海
+ENV TZ Asia/Shanghai
+
+# 设置时区,设置utf-8编码,安装django,添加任务计划
+RUN apt-get update && apt-get install -y tzdata locales python3-pip cron && apt-get clean all && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    locale-gen en_US.UTF-8 && \
+    pip3 install -r /requirements.txt
+
+# 解决中文乱码问题
+#RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+

@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    k8s.eip.work/displayName: api
+    k8s.eip.work/ingress: 'true'
+    k8s.eip.work/service: ClusterIP
+    k8s.eip.work/workload: svc-api
+  labels:
+    k8s.eip.work/layer: svc
+    k8s.eip.work/name: svc-api
+  name: svc-api
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s.eip.work/layer: svc
+      k8s.eip.work/name: svc-api
+  template:
+    metadata:
+      labels:
+        k8s.eip.work/layer: svc
+        k8s.eip.work/name: svc-api
+    spec:
+      containers:
+        -
+          image: 192.168.31.37/library/demo_api:v1
+          imagePullPolicy: Always
+          name: api
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    k8s.eip.work/displayName: api
+    k8s.eip.work/workload: svc-api
+  labels:
+    k8s.eip.work/layer: svc
+    k8s.eip.work/name: svc-api
+  name: svc-api
+  namespace: default
+spec:
+  ports:
+    - name: csmt5k
+      nodePort: 0
+      port: 8001
+      protocol: TCP
+      targetPort: 8001
+  selector:
+    k8s.eip.work/layer: svc
+    k8s.eip.work/name: svc-api
+  type: ClusterIP
+

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/static/plugins/sweetalert/sweetalert-dev.js"></script>
+    <link rel="stylesheet" href="/static/plugins/sweetalert/sweetalert.css">
+</head>
+<body>
+{% csrf_token %}
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column" style="height: 200px">
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-3 column">
+        </div>
+        <div class="col-md-6 column">
+            <div class="panel panel-success">
+                <div class="panel-heading">登录</div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="inputUser" class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputUser" placeholder="username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <a href="#" id="login" class="btn btn-warning">提交</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-3 column">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $('#login').click(function () {
+        let user = $('#inputUser').val();
+        let pwd = $('#inputPassword').val();
+        //发送ajax请求
+        let csrf = $("[name=csrfmiddlewaretoken]").val();  //csrf
+        $.ajax({
+            url: "http://api.baidu.com/login/",
+            type: "post",
+            data: {
+                username: user,
+                password: pwd,
+                csrfmiddlewaretoken: csrf
+            },
+            success: function (data) {
+                var data = JSON.parse(data);  //反序列化数据
+
+                console.log(data);
+                if (data.code == "200") { //判断json的状态
+                    swal({
+                        title: '登录成功！',
+                        type: 'success',  //展示成功的图片
+                        timer: 500,  //延时500毫秒
+                        showConfirmButton: false  //关闭确认框
+                    }, function () {
+                        window.location.href = "/index/";  //跳转后台首页
+                        //刷新当前页面
+                        {#window.location.reload();#}
+                    });
+                } else {
+                    swal("登录失败！", data.error, "error");
+                    //刷新当前页面
+                    window.location.reload();
+                }
+            }
+        });
+    })
+</script>
+</html>

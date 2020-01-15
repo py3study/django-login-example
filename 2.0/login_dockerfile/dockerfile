@@ -1,0 +1,10 @@
+FROM django:2.2.4
+# 修改更新源为阿里云
+ADD sources.list /etc/apt/sources.list
+ADD demo_login.tar.gz /
+
+EXPOSE 8000
+# 添加启动脚本
+ADD run.sh .
+RUN chmod 755 run.sh
+ENTRYPOINT [ "/run.sh"]

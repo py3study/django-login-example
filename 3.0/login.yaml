@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    k8s.eip.work/displayName: 登录
+    k8s.eip.work/ingress: 'true'
+    k8s.eip.work/service: ClusterIP
+    k8s.eip.work/workload: svc-login
+  labels:
+    k8s.eip.work/layer: svc
+    k8s.eip.work/name: svc-login
+  name: svc-login
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s.eip.work/layer: svc
+      k8s.eip.work/name: svc-login
+  template:
+    metadata:
+      labels:
+        k8s.eip.work/layer: svc
+        k8s.eip.work/name: svc-login
+    spec:
+      containers:
+        -
+          image: 192.168.31.37/library/demo_login:v1
+          imagePullPolicy: Always
+          name: login
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    k8s.eip.work/displayName: 登录
+    k8s.eip.work/workload: svc-login
+  labels:
+    k8s.eip.work/layer: svc
+    k8s.eip.work/name: svc-login
+  name: svc-login
+  namespace: default
+spec:
+  ports:
+    - name: csmt5k
+      nodePort: 0
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    k8s.eip.work/layer: svc
+    k8s.eip.work/name: svc-login
+  type: ClusterIP
+

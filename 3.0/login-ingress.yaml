@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: svc-login
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: h5.baidu.com
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName: svc-login
+          servicePort: 8000
