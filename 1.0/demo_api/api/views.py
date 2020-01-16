@@ -1,39 +1,31 @@
 from django.shortcuts import render,HttpResponse, redirect,reverse
-from utils.response import BaseResponse,CODE
 import time,json
 from api import models
-from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
+from rest_framework.views import APIView
+from django.http import JsonResponse
+from rest_framework import status
 
 # Create your views here.
-@csrf_exempt
-def login(request):
-    """
-    登录验证
-    :param request:
-    :return:
-    """
-    response = BaseResponse()  # 初始化返回值
-    if request.method == "POST":
+class UserlView(APIView):  # 用户表
+    def post(self, request, *args, **kwargs):
+        """
+        post请求
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         name = request.POST.get("username")
         pwd = request.POST.get("password")
-        print(name, pwd)
-        user_list = models.User.objects.filter(username=name, password=pwd)
-        # response = {"state": False}
-        if user_list:
-            user_obj = user_list.first()
-            # 设置session
-            # request.session['username'] = name
-            # request.session.set_expiry(3000)
+        print(name,pwd)
+        # 查询表记录
+        user_obj = models.User.objects.filter(username=name, password=pwd).first()
+        if user_obj:
             # 更新登录时间
             user_obj.last_time = time.strftime('%Y-%m-%d %H:%M:%S')
             user_obj.save()
         else:
-            response.code = '500'
-            response.data = CODE.get('500')
-        return HttpResponse(json.dumps(response.__dict__))
-
-
-    response.code = '501'
-    response.data = CODE.get('501')
-    return HttpResponse(json.dumps(response.__dict__))
+            # 返回 http 401
+            return JsonResponse({'status': status.HTTP_401_UNAUTHORIZED, 'msg': 'Authentication failure'}, status=status.HTTP_401_UNAUTHORIZED)
+        # 返回 http 200
+        return JsonResponse({'status': status.HTTP_200_OK, 'data': []}, status=status.HTTP_200_OK)

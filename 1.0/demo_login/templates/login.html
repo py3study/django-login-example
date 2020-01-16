@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="/static/plugins/sweetalert/sweetalert.css">
 </head>
 <body>
-{% csrf_token %}
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-12 column" style="height: 200px">
@@ -55,20 +54,16 @@
         let user = $('#inputUser').val();
         let pwd = $('#inputPassword').val();
         //发送ajax请求
-        let csrf = $("[name=csrfmiddlewaretoken]").val();  //csrf
         $.ajax({
-            url: "http://api.baidu.com/login/",
+            url: "http://api.baidu.com/api/v1/login/",
             type: "post",
             data: {
                 username: user,
                 password: pwd,
-                csrfmiddlewaretoken: csrf
             },
             success: function (data) {
-                var data = JSON.parse(data);  //反序列化数据
-
                 console.log(data);
-                if (data.code == "200") { //判断json的状态
+                if (data.status == "200") { //判断http 状态
                     swal({
                         title: '登录成功！',
                         type: 'success',  //展示成功的图片

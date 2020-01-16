@@ -4,7 +4,9 @@
 前端登录页面，采用bootstrap开发。使用ajax发送请求给api
 
 ## demo_api
-后端api接口，采用最简单django视图实现。使用cors组件解决跨域问题
+后端api接口，采用rest framework实现，版本为3.11.0。
+
+使用cors组件解决跨域问题
 
 # 1.0
 ## 环境说明
